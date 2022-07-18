@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnNextLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 
 internal class MainActivity : AppCompatActivity() {
@@ -37,6 +38,33 @@ internal class MainActivity : AppCompatActivity() {
                     distanceBetweenCards = resources.getDimensionPixelSize(R.dimen.card_details_distance_between_cards)
                 )
             )
+            cardAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
+
+                override fun onChanged() {
+                    // todo: transform not called on each data change. Only work correct with notifyDataSetChanged
+                    pager.doOnNextLayout { pager.requestTransform() }
+                }
+
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                    onChanged()
+                }
+
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                    onChanged()
+                }
+
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    onChanged()
+                }
+
+                override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                    onChanged()
+                }
+
+                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                    onChanged()
+                }
+            })
         }
     }
 
@@ -91,9 +119,6 @@ internal class MainActivity : AppCompatActivity() {
 
         cardAdapter.items = newItems
         pager.currentItem = oldItems.indexOf(testData) - 1
-
-        // todo: transform not called on each data change. Only work correct with notifyDataSetChanged
-        pager.doOnNextLayout { pager.requestTransform() }
     }
 
     private fun onRevertClicked() {
